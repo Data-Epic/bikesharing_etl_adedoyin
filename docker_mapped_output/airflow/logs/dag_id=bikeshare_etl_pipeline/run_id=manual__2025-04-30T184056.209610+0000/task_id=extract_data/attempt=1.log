@@ -1,0 +1,135 @@
+[2025-04-30T18:41:00.821+0000] {taskinstance.py:1979} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: bikeshare_etl_pipeline.extract_data manual__2025-04-30T18:40:56.209610+00:00 [queued]>
+[2025-04-30T18:41:00.837+0000] {taskinstance.py:1979} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: bikeshare_etl_pipeline.extract_data manual__2025-04-30T18:40:56.209610+00:00 [queued]>
+[2025-04-30T18:41:00.838+0000] {taskinstance.py:2193} INFO - Starting attempt 1 of 2
+[2025-04-30T18:41:00.862+0000] {taskinstance.py:2217} INFO - Executing <Task(_PythonDecoratedOperator): extract_data> on 2025-04-30 18:40:56.209610+00:00
+[2025-04-30T18:41:00.868+0000] {standard_task_runner.py:60} INFO - Started process 1560 to run task
+[2025-04-30T18:41:00.873+0000] {standard_task_runner.py:87} INFO - Running: ['airflow', 'tasks', 'run', 'bikeshare_etl_pipeline', 'extract_data', 'manual__2025-04-30T18:40:56.209610+00:00', '--job-id', '52', '--raw', '--subdir', 'DAGS_FOLDER/etl_pipeline.py', '--cfg-path', '/tmp/tmppinm_evh']
+[2025-04-30T18:41:00.876+0000] {standard_task_runner.py:88} INFO - Job 52: Subtask extract_data
+[2025-04-30T18:41:01.284+0000] {task_command.py:423} INFO - Running <TaskInstance: bikeshare_etl_pipeline.extract_data manual__2025-04-30T18:40:56.209610+00:00 [running]> on host e4f2445a264f
+[2025-04-30T18:41:01.699+0000] {taskinstance.py:2513} INFO - Exporting env vars: AIRFLOW_CTX_DAG_EMAIL='adedoyinsamuel25@gmail.com' AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='bikeshare_etl_pipeline' AIRFLOW_CTX_TASK_ID='extract_data' AIRFLOW_CTX_EXECUTION_DATE='2025-04-30T18:40:56.209610+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-04-30T18:40:56.209610+00:00'
+[2025-04-30T18:41:02.698+0000] {logging_mixin.py:188} INFO - <Response [200]>
+[2025-04-30T18:41:24.522+0000] {base.py:83} INFO - Using connection ID 'minio_s3_conn' for task execution.
+[2025-04-30T18:41:24.524+0000] {connection_wrapper.py:387} INFO - AWS Connection (conn_id='minio_s3_conn', conn_type='aws') credentials retrieved from extra.
+[2025-04-30T18:41:33.822+0000] {taskinstance.py:2731} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/urllib3/connection.py", line 174, in _new_conn
+    conn = connection.create_connection(
+  File "/home/airflow/.local/lib/python3.8/site-packages/urllib3/util/connection.py", line 95, in create_connection
+    raise err
+  File "/home/airflow/.local/lib/python3.8/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [Errno 111] Connection refused
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/botocore/httpsession.py", line 464, in send
+    urllib_response = conn.urlopen(
+  File "/home/airflow/.local/lib/python3.8/site-packages/urllib3/connectionpool.py", line 799, in urlopen
+    retries = retries.increment(
+  File "/home/airflow/.local/lib/python3.8/site-packages/urllib3/util/retry.py", line 525, in increment
+    raise six.reraise(type(error), error, _stacktrace)
+  File "/home/airflow/.local/lib/python3.8/site-packages/urllib3/packages/six.py", line 770, in reraise
+    raise value
+  File "/home/airflow/.local/lib/python3.8/site-packages/urllib3/connectionpool.py", line 715, in urlopen
+    httplib_response = self._make_request(
+  File "/home/airflow/.local/lib/python3.8/site-packages/urllib3/connectionpool.py", line 416, in _make_request
+    conn.request(method, url, **httplib_request_kw)
+  File "/home/airflow/.local/lib/python3.8/site-packages/botocore/awsrequest.py", line 96, in request
+    rval = super().request(method, url, body, headers, *args, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/urllib3/connection.py", line 244, in request
+    super(HTTPConnection, self).request(method, url, body=body, headers=headers)
+  File "/usr/local/lib/python3.8/http/client.py", line 1256, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/local/lib/python3.8/http/client.py", line 1302, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/usr/local/lib/python3.8/http/client.py", line 1251, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/home/airflow/.local/lib/python3.8/site-packages/botocore/awsrequest.py", line 123, in _send_output
+    self.send(msg)
+  File "/home/airflow/.local/lib/python3.8/site-packages/botocore/awsrequest.py", line 223, in send
+    return super().send(str)
+  File "/usr/local/lib/python3.8/http/client.py", line 951, in send
+    self.connect()
+  File "/home/airflow/.local/lib/python3.8/site-packages/urllib3/connection.py", line 205, in connect
+    conn = self._new_conn()
+  File "/home/airflow/.local/lib/python3.8/site-packages/urllib3/connection.py", line 186, in _new_conn
+    raise NewConnectionError(
+urllib3.exceptions.NewConnectionError: <botocore.awsrequest.AWSHTTPConnection object at 0x7fcc764cd7f0>: Failed to establish a new connection: [Errno 111] Connection refused
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 444, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 414, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/decorators/base.py", line 241, in execute
+    return_value = super().execute(context)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 200, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 217, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/etl_pipeline.py", line 48, in extract_data
+    S3Hook(aws_conn_id=AWS_CONN_ID).load_bytes(
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/providers/amazon/aws/hooks/s3.py", line 137, in wrapper
+    return func(*bound_args.args, **bound_args.kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/providers/amazon/aws/hooks/s3.py", line 91, in wrapper
+    return func(*bound_args.args, **bound_args.kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/providers/amazon/aws/hooks/s3.py", line 1188, in load_bytes
+    self._upload_file_obj(f, key, bucket_name, replace, encrypt, acl_policy)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/providers/amazon/aws/hooks/s3.py", line 1238, in _upload_file_obj
+    client.upload_fileobj(
+  File "/home/airflow/.local/lib/python3.8/site-packages/boto3/s3/inject.py", line 642, in upload_fileobj
+    return future.result()
+  File "/home/airflow/.local/lib/python3.8/site-packages/s3transfer/futures.py", line 103, in result
+    return self._coordinator.result()
+  File "/home/airflow/.local/lib/python3.8/site-packages/s3transfer/futures.py", line 266, in result
+    raise self._exception
+  File "/home/airflow/.local/lib/python3.8/site-packages/s3transfer/tasks.py", line 139, in __call__
+    return self._execute_main(kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/s3transfer/tasks.py", line 162, in _execute_main
+    return_value = self._main(**kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/s3transfer/upload.py", line 764, in _main
+    client.put_object(Bucket=bucket, Key=key, Body=body, **extra_args)
+  File "/home/airflow/.local/lib/python3.8/site-packages/botocore/client.py", line 553, in _api_call
+    return self._make_api_call(operation_name, kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/botocore/client.py", line 989, in _make_api_call
+    http, parsed_response = self._make_request(
+  File "/home/airflow/.local/lib/python3.8/site-packages/botocore/client.py", line 1015, in _make_request
+    return self._endpoint.make_request(operation_model, request_dict)
+  File "/home/airflow/.local/lib/python3.8/site-packages/botocore/endpoint.py", line 119, in make_request
+    return self._send_request(request_dict, operation_model)
+  File "/home/airflow/.local/lib/python3.8/site-packages/botocore/endpoint.py", line 202, in _send_request
+    while self._needs_retry(
+  File "/home/airflow/.local/lib/python3.8/site-packages/botocore/endpoint.py", line 354, in _needs_retry
+    responses = self._event_emitter.emit(
+  File "/home/airflow/.local/lib/python3.8/site-packages/botocore/hooks.py", line 412, in emit
+    return self._emitter.emit(aliased_event_name, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/botocore/hooks.py", line 256, in emit
+    return self._emit(event_name, kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/botocore/hooks.py", line 239, in _emit
+    response = handler(**kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/botocore/retryhandler.py", line 207, in __call__
+    if self._checker(**checker_kwargs):
+  File "/home/airflow/.local/lib/python3.8/site-packages/botocore/retryhandler.py", line 284, in __call__
+    should_retry = self._should_retry(
+  File "/home/airflow/.local/lib/python3.8/site-packages/botocore/retryhandler.py", line 320, in _should_retry
+    return self._checker(attempt_number, response, caught_exception)
+  File "/home/airflow/.local/lib/python3.8/site-packages/botocore/retryhandler.py", line 363, in __call__
+    checker_response = checker(
+  File "/home/airflow/.local/lib/python3.8/site-packages/botocore/retryhandler.py", line 247, in __call__
+    return self._check_caught_exception(
+  File "/home/airflow/.local/lib/python3.8/site-packages/botocore/retryhandler.py", line 416, in _check_caught_exception
+    raise caught_exception
+  File "/home/airflow/.local/lib/python3.8/site-packages/botocore/endpoint.py", line 281, in _do_get_response
+    http_response = self._send(request)
+  File "/home/airflow/.local/lib/python3.8/site-packages/botocore/endpoint.py", line 377, in _send
+    return self.http_session.send(request)
+  File "/home/airflow/.local/lib/python3.8/site-packages/botocore/httpsession.py", line 493, in send
+    raise EndpointConnectionError(endpoint_url=request.url, error=e)
+botocore.exceptions.EndpointConnectionError: Could not connect to the endpoint URL: "http://localhost:9000/bikeshare-raw-data/2025-04-30_capitalbikeshare-tripdata.zip"
+[2025-04-30T18:41:33.890+0000] {taskinstance.py:1149} INFO - Marking task as UP_FOR_RETRY. dag_id=bikeshare_etl_pipeline, task_id=extract_data, execution_date=20250430T184056, start_date=20250430T184100, end_date=20250430T184133
+[2025-04-30T18:41:33.922+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 52 for task extract_data (Could not connect to the endpoint URL: "http://localhost:9000/bikeshare-raw-data/2025-04-30_capitalbikeshare-tripdata.zip"; 1560)
+[2025-04-30T18:41:33.941+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2025-04-30T18:41:34.034+0000] {taskinstance.py:3312} INFO - 0 downstream tasks scheduled from follow-on schedule check

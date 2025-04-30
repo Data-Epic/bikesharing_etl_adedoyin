@@ -1,0 +1,130 @@
+
+services:
+
+  postgres:
+    image: postgres:13
+    user: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DEFAULTDB}
+    volumes:
+      - ./docker_mapped_output/postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      retries: 5
+    networks:
+      - airflow
+
+  x-airflow-common: &airflow-common
+    image: ${AIRFLOW_IMAGE_NAME:-dev_apache_airflow:2.8.4}
+    environment: &airflow-common-env
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: >-
+        postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/${POSTGRES_DEFAULTDB}
+      # Omit AIRFLOW__CORE__FERNET_KEY to use Airflow’s default behavior
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+    volumes:
+      - ./docker_mapped_output/airflow/dags:/opt/airflow/dags
+      - ./docker_mapped_output/airflow/logs:/opt/airflow/logs
+      - ./docker_mapped_output/airflow/plugins:/opt/airflow/plugins
+      - ./docker_mapped_output/airflow/config:/opt/airflow/config
+    user: "${AIRFLOW_UID:-50000}:0"
+    networks:
+      - airflow
+
+
+  airflow-init:
+      <<: *airflow-common
+      entrypoint: ["/bin/bash", "-c"]
+      command:
+        >
+          "until pg_isready -h postgres -U ${POSTGRES_USER}; do sleep 1; done &&
+          airflow db init &&
+          airflow users create --username ${_AIRFLOW_WWW_USER_USERNAME:-airflow} \
+          --password ${_AIRFLOW_WWW_USER_PASSWORD:-airflow} \
+          --firstname Airflow --lastname Admin --role Admin \
+          --email ${_AIRFLOW_WWW_USER_EMAIL:-airflow@example.com}"
+      environment:
+        <<: *airflow-common-env
+        _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
+        _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
+        _AIRFLOW_WWW_USER_EMAIL: ${_AIRFLOW_WWW_USER_EMAIL:-airflow@example.com}
+      depends_on:
+        postgres:
+          condition: service_healthy
+      restart: "no"
+
+  airflow-webserver:
+    <<: *airflow-common
+    command: webserver
+    ports:
+      - "8090:8080"
+    depends_on:
+      - airflow-init
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 10s
+      retries: 5
+
+  airflow-scheduler:
+    <<: *airflow-common
+    command: scheduler
+    depends_on:
+      - airflow-webserver
+    healthcheck:
+      test: ["CMD-SHELL", "airflow jobs check --job-type SchedulerJob --hostname \"${HOSTNAME}\""]
+      interval: 10s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - airflow
+
+  metabase:
+    image: metabase/metabase:latest
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_HOST: postgres
+      MB_DB_PORT: ${POSTGRES_PORT}
+      MB_DB_DBNAME: ${POSTGRES_DEFAULTDB}
+      MB_DB_USER: ${POSTGRES_USER}
+      MB_DB_PASS: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./docker_mapped_output/metabase_data:/metabase.db
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    networks:
+      - airflow
+
+  minio:
+    image: bitnami/minio:latest
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - ./docker_mapped_output/minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - airflow
+
+volumes:
+  docker_mapped_output:
+
+networks:
+  airflow:
+    driver: bridge
