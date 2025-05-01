@@ -2,10 +2,10 @@ from datetime import datetime, timedelta
 import requests
 import os
 import io
-import logging
-import time
 from zipfile import ZipFile
 import shutil
+from dotenv import load_dotenv
+from utils.utils import stream_flag_data
 
 import polars as pl
 import pandas as pd
@@ -13,6 +13,8 @@ from sqlalchemy import create_engine
 from airflow.decorators import dag, task
 from airflow.providers.amazon.aws.hooks.s3 import S3Hook
 
+
+load_dotenv()
 
 default_args = {
     'owner': 'airflow',
@@ -32,6 +34,7 @@ MINIO_BUCKET_RAW = 'bikeshare-raw-data'
 MINIO_BUCKET_CLEANED = 'bikeshare-transformed-data'
 MINIO_PARTITIONED_DATA = "bikeshare-partitioned-data"
 AWS_CONN_ID = 'minio_s3_conn'
+DATABASE_URL=os.getenv("DATABASE_URL")
 
 @dag(
     dag_id='bikeshare_etl_pipeline',
@@ -201,47 +204,30 @@ def bikeshare_etl_pipeline():
         return f"Uploaded {len(uploaded_keys)} partitioned files to {MINIO_PARTITIONED_DATA}"
 
 
-    # @task()
-    # def stream_flag_data(df: pl.DataFrame) -> pl.DataFrame:
-    #     """Log rides exceeding duration or starting late"""
-    #     logger = logging.getLogger('ride_flags')
-    #     logger.setLevel(logging.WARNING)
-    #     handler = logging.FileHandler('ride_flags.log')
-    #     handler.setFormatter(logging.Formatter('%(asctime)s - %(message)s'))
-    #     logger.addHandler(handler)
-
-    #     long_rides = df.filter(pl.col('duration_seconds') > 2700)
-    #     logger.warning(f'Long rides > 45 mins: {long_rides.height}')
-
-    #     late_rides = df.filter(
-    #         (pl.col('started_at').dt.hour() == 23) &
-    #         (pl.col('started_at').dt.minute() >= 59)
-    #     )
-    #     logger.warning(f'Rides starting after 11:59 PM: {late_rides.height}')
-
-    #     return df
-
-    
+    @task
+    def stream_log_data(data):
+        for data in stream_flag_data(data):
+            data
 
     @task()
     def load_cleaned_data_to_postgres(output_file: str) -> bool:
         """
         Load cleaned Parquet data into the Postgres table 'bikeshare_data'.
         """
-        df = pd.read_parquet(output_file)
+        try:
+            df = pd.read_parquet(output_file)
 
-        db_uri = db_uri = "postgresql+psycopg2://postgres:postgres@postgres:5432/postgres"
+            engine = create_engine(DATABASE_URL)
 
-        engine = create_engine(db_uri)
-
-        df.to_sql(
-            name="bikeshare_data",
-            con=engine,
-            if_exists="append",
-            index=False
-        )
-
-        return True
+            df.to_sql(
+                name="bikeshare_data",
+                con=engine,
+                if_exists="replace",
+                index=False
+            )
+            return True
+        except Exception as e:
+            print(f"An Error Occured: {e}")
 
     @task()
     def cleanup_local_files(folder_path: str):
@@ -262,7 +248,7 @@ def bikeshare_etl_pipeline():
     extracted_folder = download_and_unzip_locally()
     csv_path = upload_files_to_minio(extracted_folder)
     transformed_data = transform_data(csv_path)
-    # flagged_data = stream_flag_data(transformed_data)
+    logged_data = stream_log_data(transformed_data)
     load_data_to_bucket = load_cleaned_data_to_minio(transformed_data)
     postgres_loaded = load_cleaned_data_to_postgres(transformed_data)
     cleanup = cleanup_local_files(extracted_folder)
@@ -271,7 +257,7 @@ def bikeshare_etl_pipeline():
     zip_key >> extracted_folder
     extracted_folder >> csv_path
     csv_path >> transformed_data
-    # transformed_data >> flagged_data
+    transformed_data >> logged_data
     transformed_data >> load_data_to_bucket
     transformed_data >> postgres_loaded
     postgres_loaded >> cleanup
