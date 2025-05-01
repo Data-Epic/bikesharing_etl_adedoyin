@@ -5234,3 +5234,108 @@ SyntaxError: invalid syntax
 [2025-05-01T02:15:07.040+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:15:07.039+0000] {dag.py:3047} INFO - Sync 1 DAGs
 [2025-05-01T02:15:07.089+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:15:07.089+0000] {dag.py:3834} INFO - Setting next_dagrun for bikeshare_etl_pipeline to 2025-05-05 10:00:00+00:00, run_after=2025-05-12 10:00:00+00:00
 [2025-05-01T02:15:07.125+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl_pipeline.py took 0.489 seconds
+[2025-05-01T02:15:37.697+0000] {processor.py:161} INFO - Started process (PID=2803) to work on /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:15:37.698+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl_pipeline.py for tasks to queue
+[2025-05-01T02:15:37.699+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:15:37.699+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:15:38.024+0000] {processor.py:840} INFO - DAG(s) 'bikeshare_etl_pipeline' retrieved from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:15:38.079+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:15:38.078+0000] {dag.py:3047} INFO - Sync 1 DAGs
+[2025-05-01T02:15:38.110+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:15:38.110+0000] {dag.py:3834} INFO - Setting next_dagrun for bikeshare_etl_pipeline to 2025-05-05 10:00:00+00:00, run_after=2025-05-12 10:00:00+00:00
+[2025-05-01T02:15:38.134+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl_pipeline.py took 0.441 seconds
+[2025-05-01T02:16:08.701+0000] {processor.py:161} INFO - Started process (PID=2826) to work on /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:16:08.702+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl_pipeline.py for tasks to queue
+[2025-05-01T02:16:08.703+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:16:08.702+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:16:09.021+0000] {processor.py:840} INFO - DAG(s) 'bikeshare_etl_pipeline' retrieved from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:16:09.058+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:16:09.057+0000] {dag.py:3047} INFO - Sync 1 DAGs
+[2025-05-01T02:16:09.082+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:16:09.081+0000] {dag.py:3834} INFO - Setting next_dagrun for bikeshare_etl_pipeline to 2025-05-05 10:00:00+00:00, run_after=2025-05-12 10:00:00+00:00
+[2025-05-01T02:16:09.102+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl_pipeline.py took 0.405 seconds
+[2025-05-01T02:16:39.243+0000] {processor.py:161} INFO - Started process (PID=2849) to work on /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:16:39.245+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl_pipeline.py for tasks to queue
+[2025-05-01T02:16:39.247+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:16:39.246+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:16:39.574+0000] {processor.py:840} INFO - DAG(s) 'bikeshare_etl_pipeline' retrieved from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:16:39.649+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:16:39.649+0000] {dag.py:3047} INFO - Sync 1 DAGs
+[2025-05-01T02:16:39.686+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:16:39.685+0000] {dag.py:3834} INFO - Setting next_dagrun for bikeshare_etl_pipeline to 2025-05-05 10:00:00+00:00, run_after=2025-05-12 10:00:00+00:00
+[2025-05-01T02:16:39.717+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl_pipeline.py took 0.478 seconds
+[2025-05-01T02:17:10.195+0000] {processor.py:161} INFO - Started process (PID=2879) to work on /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:17:10.197+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl_pipeline.py for tasks to queue
+[2025-05-01T02:17:10.198+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:17:10.197+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:17:10.555+0000] {processor.py:840} INFO - DAG(s) 'bikeshare_etl_pipeline' retrieved from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:17:10.631+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:17:10.630+0000] {dag.py:3047} INFO - Sync 1 DAGs
+[2025-05-01T02:17:10.687+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:17:10.687+0000] {dag.py:3834} INFO - Setting next_dagrun for bikeshare_etl_pipeline to 2025-05-05 10:00:00+00:00, run_after=2025-05-12 10:00:00+00:00
+[2025-05-01T02:17:10.742+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl_pipeline.py took 0.551 seconds
+[2025-05-01T02:17:40.856+0000] {processor.py:161} INFO - Started process (PID=2903) to work on /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:17:40.858+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl_pipeline.py for tasks to queue
+[2025-05-01T02:17:40.859+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:17:40.859+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:17:41.171+0000] {processor.py:840} INFO - DAG(s) 'bikeshare_etl_pipeline' retrieved from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:17:41.206+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:17:41.206+0000] {dag.py:3047} INFO - Sync 1 DAGs
+[2025-05-01T02:17:41.231+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:17:41.231+0000] {dag.py:3834} INFO - Setting next_dagrun for bikeshare_etl_pipeline to 2025-05-05 10:00:00+00:00, run_after=2025-05-12 10:00:00+00:00
+[2025-05-01T02:17:41.265+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl_pipeline.py took 0.412 seconds
+[2025-05-01T02:18:11.385+0000] {processor.py:161} INFO - Started process (PID=2926) to work on /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:18:11.387+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl_pipeline.py for tasks to queue
+[2025-05-01T02:18:11.389+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:18:11.388+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:18:11.756+0000] {processor.py:840} INFO - DAG(s) 'bikeshare_etl_pipeline' retrieved from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:18:11.817+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:18:11.817+0000] {dag.py:3047} INFO - Sync 1 DAGs
+[2025-05-01T02:18:11.863+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:18:11.862+0000] {dag.py:3834} INFO - Setting next_dagrun for bikeshare_etl_pipeline to 2025-05-05 10:00:00+00:00, run_after=2025-05-12 10:00:00+00:00
+[2025-05-01T02:18:11.906+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl_pipeline.py took 0.527 seconds
+[2025-05-01T02:18:42.389+0000] {processor.py:161} INFO - Started process (PID=2949) to work on /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:18:42.390+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl_pipeline.py for tasks to queue
+[2025-05-01T02:18:42.392+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:18:42.391+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:18:42.770+0000] {processor.py:840} INFO - DAG(s) 'bikeshare_etl_pipeline' retrieved from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:18:42.822+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:18:42.821+0000] {dag.py:3047} INFO - Sync 1 DAGs
+[2025-05-01T02:18:42.858+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:18:42.857+0000] {dag.py:3834} INFO - Setting next_dagrun for bikeshare_etl_pipeline to 2025-05-05 10:00:00+00:00, run_after=2025-05-12 10:00:00+00:00
+[2025-05-01T02:18:42.891+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl_pipeline.py took 0.505 seconds
+[2025-05-01T02:19:12.949+0000] {processor.py:161} INFO - Started process (PID=2980) to work on /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:19:12.950+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl_pipeline.py for tasks to queue
+[2025-05-01T02:19:12.951+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:19:12.951+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:19:13.270+0000] {processor.py:840} INFO - DAG(s) 'bikeshare_etl_pipeline' retrieved from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:19:13.312+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:19:13.312+0000] {dag.py:3047} INFO - Sync 1 DAGs
+[2025-05-01T02:19:13.342+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:19:13.342+0000] {dag.py:3834} INFO - Setting next_dagrun for bikeshare_etl_pipeline to 2025-05-05 10:00:00+00:00, run_after=2025-05-12 10:00:00+00:00
+[2025-05-01T02:19:13.369+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl_pipeline.py took 0.423 seconds
+[2025-05-01T02:19:43.482+0000] {processor.py:161} INFO - Started process (PID=3003) to work on /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:19:43.484+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl_pipeline.py for tasks to queue
+[2025-05-01T02:19:43.486+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:19:43.485+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:19:43.833+0000] {processor.py:840} INFO - DAG(s) 'bikeshare_etl_pipeline' retrieved from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:19:43.873+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:19:43.873+0000] {dag.py:3047} INFO - Sync 1 DAGs
+[2025-05-01T02:19:43.911+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:19:43.910+0000] {dag.py:3834} INFO - Setting next_dagrun for bikeshare_etl_pipeline to 2025-05-05 10:00:00+00:00, run_after=2025-05-12 10:00:00+00:00
+[2025-05-01T02:19:43.946+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl_pipeline.py took 0.469 seconds
+[2025-05-01T02:20:14.512+0000] {processor.py:161} INFO - Started process (PID=3026) to work on /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:20:14.514+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl_pipeline.py for tasks to queue
+[2025-05-01T02:20:14.515+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:20:14.515+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:20:14.835+0000] {processor.py:840} INFO - DAG(s) 'bikeshare_etl_pipeline' retrieved from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:20:14.874+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:20:14.874+0000] {dag.py:3047} INFO - Sync 1 DAGs
+[2025-05-01T02:20:14.904+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:20:14.904+0000] {dag.py:3834} INFO - Setting next_dagrun for bikeshare_etl_pipeline to 2025-05-05 10:00:00+00:00, run_after=2025-05-12 10:00:00+00:00
+[2025-05-01T02:20:14.928+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl_pipeline.py took 0.420 seconds
+[2025-05-01T02:20:46.086+0000] {processor.py:161} INFO - Started process (PID=3049) to work on /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:20:46.089+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl_pipeline.py for tasks to queue
+[2025-05-01T02:20:46.091+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:20:46.091+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:20:46.470+0000] {processor.py:840} INFO - DAG(s) 'bikeshare_etl_pipeline' retrieved from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:20:46.550+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:20:46.550+0000] {dag.py:3047} INFO - Sync 1 DAGs
+[2025-05-01T02:20:46.608+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:20:46.608+0000] {dag.py:3834} INFO - Setting next_dagrun for bikeshare_etl_pipeline to 2025-05-05 10:00:00+00:00, run_after=2025-05-12 10:00:00+00:00
+[2025-05-01T02:20:46.655+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl_pipeline.py took 0.579 seconds
+[2025-05-01T02:21:16.977+0000] {processor.py:161} INFO - Started process (PID=3080) to work on /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:21:16.979+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl_pipeline.py for tasks to queue
+[2025-05-01T02:21:16.981+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:21:16.980+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:21:19.588+0000] {processor.py:840} INFO - DAG(s) 'bikeshare_etl_pipeline' retrieved from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:21:19.640+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:21:19.640+0000] {dag.py:3047} INFO - Sync 1 DAGs
+[2025-05-01T02:21:19.673+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:21:19.673+0000] {dag.py:3834} INFO - Setting next_dagrun for bikeshare_etl_pipeline to 2025-05-05 10:00:00+00:00, run_after=2025-05-12 10:00:00+00:00
+[2025-05-01T02:21:19.705+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl_pipeline.py took 0.477 seconds
+[2025-05-01T02:21:52.777+0000] {processor.py:161} INFO - Started process (PID=3103) to work on /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:21:52.779+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl_pipeline.py for tasks to queue
+[2025-05-01T02:21:52.781+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:21:52.780+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:21:53.117+0000] {processor.py:840} INFO - DAG(s) 'bikeshare_etl_pipeline' retrieved from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:21:53.179+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:21:53.179+0000] {dag.py:3047} INFO - Sync 1 DAGs
+[2025-05-01T02:21:53.226+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:21:53.225+0000] {dag.py:3834} INFO - Setting next_dagrun for bikeshare_etl_pipeline to 2025-05-05 10:00:00+00:00, run_after=2025-05-12 10:00:00+00:00
+[2025-05-01T02:21:53.272+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl_pipeline.py took 0.501 seconds
+[2025-05-01T02:22:26.858+0000] {processor.py:161} INFO - Started process (PID=3134) to work on /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:22:26.860+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl_pipeline.py for tasks to queue
+[2025-05-01T02:22:26.861+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:22:26.861+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:22:27.202+0000] {processor.py:840} INFO - DAG(s) 'bikeshare_etl_pipeline' retrieved from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:22:27.254+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:22:27.253+0000] {dag.py:3047} INFO - Sync 1 DAGs
+[2025-05-01T02:22:27.296+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:22:27.296+0000] {dag.py:3834} INFO - Setting next_dagrun for bikeshare_etl_pipeline to 2025-05-05 10:00:00+00:00, run_after=2025-05-12 10:00:00+00:00
+[2025-05-01T02:22:27.339+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl_pipeline.py took 0.485 seconds
+[2025-05-01T02:22:59.443+0000] {processor.py:161} INFO - Started process (PID=3156) to work on /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:22:59.445+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl_pipeline.py for tasks to queue
+[2025-05-01T02:22:59.446+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:22:59.445+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:22:59.755+0000] {processor.py:840} INFO - DAG(s) 'bikeshare_etl_pipeline' retrieved from /opt/airflow/dags/etl_pipeline.py
+[2025-05-01T02:22:59.809+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:22:59.808+0000] {dag.py:3047} INFO - Sync 1 DAGs
+[2025-05-01T02:22:59.843+0000] {logging_mixin.py:188} INFO - [2025-05-01T02:22:59.842+0000] {dag.py:3834} INFO - Setting next_dagrun for bikeshare_etl_pipeline to 2025-05-05 10:00:00+00:00, run_after=2025-05-12 10:00:00+00:00
+[2025-05-01T02:22:59.879+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl_pipeline.py took 0.440 seconds
