@@ -4,14 +4,15 @@ import os
 import io
 import logging
 import time
-import polars as pl
-import pandas as pd
 from zipfile import ZipFile
 import shutil
-from tempfile import mkdtemp
 
+import polars as pl
+import pandas as pd
+from sqlalchemy import create_engine
 from airflow.decorators import dag, task
 from airflow.providers.amazon.aws.hooks.s3 import S3Hook
+
 
 default_args = {
     'owner': 'airflow',
@@ -25,7 +26,7 @@ default_args = {
 }
 
 DATA_URL = 'https://s3.amazonaws.com/capitalbikeshare-data/202212-capitalbikeshare-tripdata.zip'
-LOCAL_STORAGE = '/opt/airflow/dags/data'
+LOCAL_STORAGE = '/opt/airflow/data'
 CURRENT_DATE = datetime.now().strftime("%d-%m-%Y")
 MINIO_BUCKET_RAW = 'bikeshare-raw-data'
 MINIO_BUCKET_CLEANED = 'bikeshare-transformed-data'
@@ -171,27 +172,23 @@ def bikeshare_etl_pipeline():
         Read cleaned Parquet file, partition it by 'member_casual' and 'week',
         and upload each partition to MinIO as a separate Parquet file.
         """
-        # Read the Parquet file using Pandas
+
         df = pd.read_parquet(output_file)
 
-        # Initialize S3 hook
+
         s3 = S3Hook(aws_conn_id=AWS_CONN_ID)
         uploaded_keys = []
 
-        # Group by 'member_casual' and 'week'
         grouped = df.groupby(['member_casual', 'week'])
 
         for (member, week), group_df in grouped:
-            # Create a dynamic file name and S3 key
             file_name = f"{member}_week{week}_{CURRENT_DATE}.parquet"
             s3_key = f"{CURRENT_DATE}/{member}/week={week}/{file_name}"
 
-            # Write the group to a buffer
             buffer = io.BytesIO()
             group_df.to_parquet(buffer, index=False)
             buffer.seek(0)
 
-            # Upload to MinIO
             s3.load_bytes(
                 bytes_data=buffer.read(),
                 key=s3_key,
@@ -227,19 +224,38 @@ def bikeshare_etl_pipeline():
     
 
     @task()
-    def load_cleaned_data_to_postgres(parquet_key: str) -> bool:
-        """Placeholder for loading Parquet to Postgres"""
-        print(f'Would load {parquet_key} to PostgreSQL database')
+    def load_cleaned_data_to_postgres(output_file: str) -> bool:
+        """
+        Load cleaned Parquet data into the Postgres table 'bikeshare_data'.
+        """
+        df = pd.read_parquet(output_file)
+
+        db_uri = db_uri = "postgresql+psycopg2://postgres:postgres@postgres:5432/postgres"
+
+        engine = create_engine(db_uri)
+
+        df.to_sql(
+            name="bikeshare_data",
+            con=engine,
+            if_exists="append",
+            index=False
+        )
+
         return True
 
     @task()
     def cleanup_local_files(folder_path: str):
-        """Clean up the temporary directory and its contents"""
+        """Clean up all files and subdirectories within the given folder path, but keep the folder itself."""
         try:
-            shutil.rmtree(os.path.dirname(folder_path))
-            print(f"Successfully cleaned up {folder_path}")
+            for item in os.listdir(folder_path):
+                item_path = os.path.join(folder_path, item)
+                if os.path.isfile(item_path) or os.path.islink(item_path):
+                    os.remove(item_path)
+                elif os.path.isdir(item_path):
+                    shutil.rmtree(item_path)
+            print(f"Successfully cleaned up contents of {folder_path}")
         except Exception as e:
-            print(f"Failed to clean up {folder_path}: {str(e)}")
+            print(f"Failed to clean up contents of {folder_path}: {str(e)}")
 
 
     zip_key = download_zipfile_to_bucket(DATA_URL)
@@ -247,18 +263,18 @@ def bikeshare_etl_pipeline():
     csv_path = upload_files_to_minio(extracted_folder)
     transformed_data = transform_data(csv_path)
     # flagged_data = stream_flag_data(transformed_data)
-    parquet_key = load_cleaned_data_to_minio(transformed_data)
-    postgres_loaded = load_cleaned_data_to_postgres(parquet_key)
-    # cleanup = cleanup_local_files(extracted_folder)
+    load_data_to_bucket = load_cleaned_data_to_minio(transformed_data)
+    postgres_loaded = load_cleaned_data_to_postgres(transformed_data)
+    cleanup = cleanup_local_files(extracted_folder)
 
     # Set dependencies
     zip_key >> extracted_folder
     extracted_folder >> csv_path
     csv_path >> transformed_data
     # transformed_data >> flagged_data
-    transformed_data >> parquet_key
+    transformed_data >> load_data_to_bucket
     transformed_data >> postgres_loaded
-    # postgres_loaded >> cleanup
+    postgres_loaded >> cleanup
 
 # Instantiate the DAG
 bikeshare_etl_dag = bikeshare_etl_pipeline()
