@@ -3,8 +3,12 @@ import requests
 import os
 import io
 import logging
+import time
 import polars as pl
+import pandas as pd
 from zipfile import ZipFile
+import shutil
+from tempfile import mkdtemp
 
 from airflow.decorators import dag, task
 from airflow.providers.amazon.aws.hooks.s3 import S3Hook
@@ -21,9 +25,11 @@ default_args = {
 }
 
 DATA_URL = 'https://s3.amazonaws.com/capitalbikeshare-data/202212-capitalbikeshare-tripdata.zip'
-LOCAL_STORAGE = opt/
+LOCAL_STORAGE = '/opt/airflow/dags/data'
+CURRENT_DATE = datetime.now().strftime("%d-%m-%Y")
 MINIO_BUCKET_RAW = 'bikeshare-raw-data'
-MINIO_BUCKET_CLEANED = 'bikeshare-cleaned-data'
+MINIO_BUCKET_CLEANED = 'bikeshare-transformed-data'
+MINIO_PARTITIONED_DATA = "bikeshare-partitioned-data"
 AWS_CONN_ID = 'minio_s3_conn'
 
 @dag(
@@ -36,147 +42,223 @@ AWS_CONN_ID = 'minio_s3_conn'
 def bikeshare_etl_pipeline():
 
     @task()
-    def extract_data(data_url: str):
+    def download_zipfile_to_bucket(data_url: str) -> str:
         """Download ZIP from URL and upload to MinIO/S3"""
-        response = requests.get(data_url, stream=True, timeout=30)
-        response.raise_for_status()
-        
-        current_date = datetime.now().strftime('%Y-%m-%d')
-        key = f"{current_date}_capitalbikeshare-tripdata.zip"
-        
+        try:
+            response = requests.get(data_url, stream=True, timeout=30)
+            response.raise_for_status()
+        except requests.RequestException as e:
+            raise Exception(f"Failed to download data from {data_url}: {e}")
+
+        key = f"{CURRENT_DATE}_capitalbikeshare-tripdata.zip"
         buffer = io.BytesIO()
+
         for chunk in response.iter_content(chunk_size=8192):
             buffer.write(chunk)
         buffer.seek(0)
-        
+
         s3_hook = S3Hook(aws_conn_id=AWS_CONN_ID)
         conn = s3_hook.get_connection(AWS_CONN_ID)
-        
-        endpoint_url = conn.extra_dejson.get("endpoint_url")     
-        
+        endpoint_url = conn.extra_dejson.get("endpoint_url")
+
         s3_hook.load_bytes(
             bytes_data=buffer.getvalue(),
             key=key,
             bucket_name=MINIO_BUCKET_RAW,
             replace=True,
         )
-        
+
         return f"{endpoint_url}/{MINIO_BUCKET_RAW}/{key}"
 
     @task()
-    def unzip_file(zip_file_url: str) -> str:
-        """Download ZIP from MinIO/S3 URL, extract it, and upload files to same bucket"""
+    def download_and_unzip_locally() -> str:
+        """Download ZIP from URL, save locally, and extract"""
+        zip_path = os.path.join(LOCAL_STORAGE, f"{CURRENT_DATE}_capitalbikeshare-tripdata.zip")
+
+        try:
+            response = requests.get(DATA_URL, stream=True, timeout=30)
+            response.raise_for_status()
+        except requests.RequestException as e:
+            raise Exception(f"Failed to download data from {DATA_URL}: {e}")
+
+        with open(zip_path, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+
+        folder_name =os.path.join(LOCAL_STORAGE,f"{CURRENT_DATE}_capitalbikeshare-tripdata")
+        os.makedirs(folder_name, exist_ok=True)
+
+        with ZipFile(zip_path, 'r') as zip_ref:
+            zip_ref.extractall(folder_name)
+
+        os.remove(zip_path)
+
+        return folder_name
+
+    @task()
+    def upload_files_to_minio(folder_path: str) -> str:
+        """Upload CSV files to MinIO, return CSV path"""
         s3_hook = S3Hook(aws_conn_id=AWS_CONN_ID)
-        
-        parts = zip_file_url.split(f"/{MINIO_BUCKET_RAW}/")
-        if len(parts) != 2:
-            raise ValueError(f"Invalid MinIO/S3 URL format: {zip_file_url}")
-        
-        zip_key = parts[1]
-        
-        # Download the ZIP file
-        zip_bytes = s3_hook.read_key(key=zip_key, bucket_name=MINIO_BUCKET_RAW)
-        
-        folder_name = zip_key.rsplit('.', 1)[0]
-        
-        with ZipFile(io.BytesIO(zip_bytes), 'r') as zip_ref:
-            for file_info in zip_ref.infolist():
-                if not file_info.is_dir():
-                    file_data = zip_ref.read(file_info.filename)
-                    file_key = f"{folder_name}/{file_info.filename}"
-                    s3_hook.load_bytes(
-                        bytes_data=file_data,
-                        key=file_key,
-                        bucket_name=MINIO_BUCKET_RAW,
-                        replace=True
-                    )
-        
-        return f"{parts[0]}/{MINIO_BUCKET_RAW}/{folder_name}/"
+        csv_files = [f for f in os.listdir(folder_path) if f.lower().endswith('.csv')]
+
+        if not csv_files:
+            raise FileNotFoundError(f'No CSV files found in {folder_path}')
+
+        for csv_file in csv_files:
+            local_path = os.path.join(folder_path, csv_file)
+            s3_key = f"{CURRENT_DATE}_{csv_file}"
+
+            s3_hook.load_file(
+                filename=local_path,
+                key=s3_key,
+                bucket_name=MINIO_BUCKET_RAW,
+                replace=True
+            )
+
+        return local_path
 
     @task()
-    def get_latest_data(folder_name: str) -> str:
-        """Return the first CSV file path in the folder"""
-        for fname in os.listdir(folder_name):
-            if fname.endswith('.csv'):
-                return os.path.join(folder_name, fname)
-        raise FileNotFoundError(f'No CSV found in {folder_name}')
+    def transform_data(file_path: str) -> str:
+        """Read CSV, transform it, and upload Parquet to MinIO"""
 
-    @task()
-    def transform_data(file_path: str) -> pl.DataFrame:
-        """Read CSV, parse dates, compute durations and dedupe"""
-        df = pl.read_csv(
-            file_path,
-            dtypes={
-                'ride_id': pl.Utf8,
-                'rideable_type': pl.Utf8,
-                'started_at': pl.Utf8,
-                'ended_at': pl.Utf8,
-                'start_station_name': pl.Utf8,
-                'start_station_id': pl.Int64,
-                'end_station_name': pl.Utf8,
-                'end_station_id': pl.Int64,
-                'start_lat': pl.Float64,
-                'start_lng': pl.Float64,
-                'end_lat': pl.Float64,
-                'end_lng': pl.Float64,
-                'member_casual': pl.Utf8,
-            },
-        )
-        df = df.with_columns([
-            pl.col('started_at').str.strptime(pl.Datetime, fmt=None).alias('started_at'),
-            pl.col('ended_at').str.strptime(pl.Datetime, fmt=None).alias('ended_at'),
-        ]).with_columns([
-            (pl.col('ended_at') - pl.col('started_at')).alias('duration'),
-            (pl.col('ended_at') - pl.col('started_at')).dt.seconds().alias('duration_seconds'),
-            pl.col('ended_at').dt.week_of_year().alias('week'),
-        ]).unique(subset=['ride_id'])
-        return df
+        schema = {
+            'ride_id': pl.String,
+            'rideable_type': pl.String,
+            'started_at': pl.String,
+            'ended_at': pl.String,
+            'start_station_name': pl.String,
+            'start_station_id': pl.String,
+            'end_station_name': pl.String,
+            'end_station_id': pl.String,
+            'start_lat': pl.Float64,
+            'start_lng': pl.Float64,
+            'end_lat': pl.Float64,
+            'end_lng': pl.Float64,
+            'member_casual': pl.String,
+        }
 
-    @task()
-    def stream_flag_data(df: pl.DataFrame) -> pl.DataFrame:
-        """Log rides exceeding duration or starting late"""
-        logger = logging.getLogger('ride_flags')
-        logger.setLevel(logging.WARNING)
-        handler = logging.FileHandler('ride_flags.log')
-        handler.setFormatter(logging.Formatter('%(asctime)s - %(message)s'))
-        logger.addHandler(handler)
-        long_rides = df.filter(pl.col('duration_seconds') > 2700)
-        logger.warning(f'Long rides > 45 mins: {long_rides.height}')
-        late_rides = df.filter(
-            (pl.col('started_at').dt.hour() >= 23) &
-            (pl.col('started_at').dt.minute() >= 59)
-        )
-        logger.warning(f'Rides starting after 11:59 PM: {late_rides.height}')
-        return df
+        data = pl.read_csv(file_path, schema=schema)
 
-    @task()
-    def load_cleaned_data_to_minio(df: pl.DataFrame) -> str:
-        """Write parquet to MinIO partitioned by member and week"""
-        timestamp = datetime.now().strftime('%Y-%m-%d')
-        key = f'capitalbikeshare-tripdata_{timestamp}.parquet'
-        buf = io.BytesIO()
-        df.write_parquet(buf, partition_cols=['member_casual', 'week'])
-        buf.seek(0)
-        S3Hook(aws_conn_id=AWS_CONN_ID).load_bytes(
-            bytes_data=buf.getvalue(),
-            key=key,
+        data = data.with_columns([
+            pl.col('started_at').str.to_datetime(),
+            pl.col('ended_at').str.to_datetime(),
+            (pl.col('ended_at').str.to_datetime() - pl.col('started_at').str.to_datetime()).alias('duration'),
+            (pl.col('ended_at').str.to_datetime() - pl.col('started_at').str.to_datetime())
+                .dt.total_seconds().alias('duration_seconds'),
+            pl.col('ended_at').str.to_datetime().dt.week().alias('week')
+        ])
+
+        data = data.unique(subset='ride_id')
+
+        output_file = f"{LOCAL_STORAGE}/{CURRENT_DATE}_capitalbikeshare-tripdata.parquet"
+        data.write_parquet(output_file)
+
+        s3_hook = S3Hook(aws_conn_id=AWS_CONN_ID)
+        s3_key = f"{CURRENT_DATE}/capitalbikeshare-tripdata.parquet"
+        s3_hook.load_file(
+            filename=output_file,
+            key=s3_key,
             bucket_name=MINIO_BUCKET_CLEANED,
-            replace=True,
+            replace=True
         )
-        return key
+
+        return output_file
+    
+
+    @task()
+    def load_cleaned_data_to_minio(output_file: str) -> str:
+        """
+        Read cleaned Parquet file, partition it by 'member_casual' and 'week',
+        and upload each partition to MinIO as a separate Parquet file.
+        """
+        # Read the Parquet file using Pandas
+        df = pd.read_parquet(output_file)
+
+        # Initialize S3 hook
+        s3 = S3Hook(aws_conn_id=AWS_CONN_ID)
+        uploaded_keys = []
+
+        # Group by 'member_casual' and 'week'
+        grouped = df.groupby(['member_casual', 'week'])
+
+        for (member, week), group_df in grouped:
+            # Create a dynamic file name and S3 key
+            file_name = f"{member}_week{week}_{CURRENT_DATE}.parquet"
+            s3_key = f"{CURRENT_DATE}/{member}/week={week}/{file_name}"
+
+            # Write the group to a buffer
+            buffer = io.BytesIO()
+            group_df.to_parquet(buffer, index=False)
+            buffer.seek(0)
+
+            # Upload to MinIO
+            s3.load_bytes(
+                bytes_data=buffer.read(),
+                key=s3_key,
+                bucket_name=MINIO_PARTITIONED_DATA,
+                replace=True
+            )
+
+            uploaded_keys.append(s3_key)
+
+        return f"Uploaded {len(uploaded_keys)} partitioned files to {MINIO_PARTITIONED_DATA}"
+
+
+    # @task()
+    # def stream_flag_data(df: pl.DataFrame) -> pl.DataFrame:
+    #     """Log rides exceeding duration or starting late"""
+    #     logger = logging.getLogger('ride_flags')
+    #     logger.setLevel(logging.WARNING)
+    #     handler = logging.FileHandler('ride_flags.log')
+    #     handler.setFormatter(logging.Formatter('%(asctime)s - %(message)s'))
+    #     logger.addHandler(handler)
+
+    #     long_rides = df.filter(pl.col('duration_seconds') > 2700)
+    #     logger.warning(f'Long rides > 45 mins: {long_rides.height}')
+
+    #     late_rides = df.filter(
+    #         (pl.col('started_at').dt.hour() == 23) &
+    #         (pl.col('started_at').dt.minute() >= 59)
+    #     )
+    #     logger.warning(f'Rides starting after 11:59 PM: {late_rides.height}')
+
+    #     return df
+
+    
 
     @task()
     def load_cleaned_data_to_postgres(parquet_key: str) -> bool:
-        """Placeholder for loading parquet to Postgres"""
-        print(f'Loaded {parquet_key} to PostgreSQL database')
+        """Placeholder for loading Parquet to Postgres"""
+        print(f'Would load {parquet_key} to PostgreSQL database')
         return True
 
-    zip_file = extract_data(DATA_URL)
-    folder = unzip_file(zip_file)
-    csv_path = get_latest_data(folder)
-    transformed = transform_data(csv_path)
-    flagged = stream_flag_data(transformed)
-    minio_key = load_cleaned_data_to_minio(flagged)
-    load_cleaned_data_to_postgres(minio_key)
+    @task()
+    def cleanup_local_files(folder_path: str):
+        """Clean up the temporary directory and its contents"""
+        try:
+            shutil.rmtree(os.path.dirname(folder_path))
+            print(f"Successfully cleaned up {folder_path}")
+        except Exception as e:
+            print(f"Failed to clean up {folder_path}: {str(e)}")
 
-bikeshare_etl_pipeline()
+
+    zip_key = download_zipfile_to_bucket(DATA_URL)
+    extracted_folder = download_and_unzip_locally()
+    csv_path = upload_files_to_minio(extracted_folder)
+    transformed_data = transform_data(csv_path)
+    # flagged_data = stream_flag_data(transformed_data)
+    parquet_key = load_cleaned_data_to_minio(transformed_data)
+    postgres_loaded = load_cleaned_data_to_postgres(parquet_key)
+    # cleanup = cleanup_local_files(extracted_folder)
+
+    # Set dependencies
+    zip_key >> extracted_folder
+    extracted_folder >> csv_path
+    csv_path >> transformed_data
+    # transformed_data >> flagged_data
+    transformed_data >> parquet_key
+    transformed_data >> postgres_loaded
+    # postgres_loaded >> cleanup
+
+# Instantiate the DAG
+bikeshare_etl_dag = bikeshare_etl_pipeline()

@@ -1,0 +1,79 @@
+[2025-04-30T23:05:33.050+0000] {taskinstance.py:1979} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: bikeshare_etl_pipeline.transform_data manual__2025-04-30T23:04:13.923792+00:00 [queued]>
+[2025-04-30T23:05:33.082+0000] {taskinstance.py:1979} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: bikeshare_etl_pipeline.transform_data manual__2025-04-30T23:04:13.923792+00:00 [queued]>
+[2025-04-30T23:05:33.086+0000] {taskinstance.py:2193} INFO - Starting attempt 2 of 2
+[2025-04-30T23:05:33.116+0000] {taskinstance.py:2217} INFO - Executing <Task(_PythonDecoratedOperator): transform_data> on 2025-04-30 23:04:13.923792+00:00
+[2025-04-30T23:05:33.125+0000] {standard_task_runner.py:60} INFO - Started process 14498 to run task
+[2025-04-30T23:05:33.132+0000] {standard_task_runner.py:87} INFO - Running: ['airflow', 'tasks', 'run', 'bikeshare_etl_pipeline', 'transform_data', 'manual__2025-04-30T23:04:13.923792+00:00', '--job-id', '130', '--raw', '--subdir', 'DAGS_FOLDER/etl_pipeline.py', '--cfg-path', '/tmp/tmpdqmu0fx4']
+[2025-04-30T23:05:33.136+0000] {standard_task_runner.py:88} INFO - Job 130: Subtask transform_data
+[2025-04-30T23:05:33.402+0000] {task_command.py:423} INFO - Running <TaskInstance: bikeshare_etl_pipeline.transform_data manual__2025-04-30T23:04:13.923792+00:00 [running]> on host e4f2445a264f
+[2025-04-30T23:05:33.990+0000] {taskinstance.py:2513} INFO - Exporting env vars: AIRFLOW_CTX_DAG_EMAIL='adedoyinsamuel25@gmail.com' AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='bikeshare_etl_pipeline' AIRFLOW_CTX_TASK_ID='transform_data' AIRFLOW_CTX_EXECUTION_DATE='2025-04-30T23:04:13.923792+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-04-30T23:04:13.923792+00:00'
+[2025-04-30T23:05:35.174+0000] {python.py:202} INFO - Done. Returned value was: shape: (175_233, 16)
+┌────────────┬────────────┬────────────┬────────────┬───┬───────────┬───────────┬───────────┬──────┐
+│ ride_id    ┆ rideable_t ┆ started_at ┆ ended_at   ┆ … ┆ member_ca ┆ duration  ┆ duration_ ┆ week │
+│ ---        ┆ ype        ┆ ---        ┆ ---        ┆   ┆ sual      ┆ ---       ┆ seconds   ┆ ---  │
+│ str        ┆ ---        ┆ datetime[μ ┆ datetime[μ ┆   ┆ ---       ┆ duration[ ┆ ---       ┆ i8   │
+│            ┆ str        ┆ s]         ┆ s]         ┆   ┆ str       ┆ μs]       ┆ i64       ┆      │
+╞════════════╪════════════╪════════════╪════════════╪═══╪═══════════╪═══════════╪═══════════╪══════╡
+│ 958A90CBF3 ┆ classic_bi ┆ 2022-12-02 ┆ 2022-12-02 ┆ … ┆ member    ┆ 1m 15s    ┆ 75        ┆ 48   │
+│ 8D6CA6     ┆ ke         ┆ 09:30:22   ┆ 09:31:37   ┆   ┆           ┆           ┆           ┆      │
+│ D879831E49 ┆ classic_bi ┆ 2022-12-28 ┆ 2022-12-28 ┆ … ┆ member    ┆ 23m 55s   ┆ 1435      ┆ 52   │
+│ C9BE42     ┆ ke         ┆ 11:35:02   ┆ 11:58:57   ┆   ┆           ┆           ┆           ┆      │
+│ 92E18DBB94 ┆ classic_bi ┆ 2022-12-22 ┆ 2022-12-22 ┆ … ┆ member    ┆ 10m 34s   ┆ 634       ┆ 51   │
+│ 728FA3     ┆ ke         ┆ 18:07:17   ┆ 18:17:51   ┆   ┆           ┆           ┆           ┆      │
+│ 2A8AF59A96 ┆ classic_bi ┆ 2022-12-08 ┆ 2022-12-08 ┆ … ┆ member    ┆ 16m 14s   ┆ 974       ┆ 49   │
+│ 39D1E9     ┆ ke         ┆ 13:59:53   ┆ 14:16:07   ┆   ┆           ┆           ┆           ┆      │
+│ DDB2DF56BA ┆ classic_bi ┆ 2022-12-01 ┆ 2022-12-01 ┆ … ┆ member    ┆ 19m 20s   ┆ 1160      ┆ 48   │
+│ F0ABE9     ┆ ke         ┆ 09:13:38   ┆ 09:32:58   ┆   ┆           ┆           ┆           ┆      │
+│ …          ┆ …          ┆ …          ┆ …          ┆ … ┆ …         ┆ …         ┆ …         ┆ …    │
+│ 14ACE0674B ┆ electric_b ┆ 2022-12-11 ┆ 2022-12-11 ┆ … ┆ member    ┆ 9m 15s    ┆ 555       ┆ 49   │
+│ 8712A7     ┆ ike        ┆ 19:32:09   ┆ 19:41:24   ┆   ┆           ┆           ┆           ┆      │
+│ F9AE581925 ┆ electric_b ┆ 2022-12-31 ┆ 2022-12-31 ┆ … ┆ casual    ┆ 17m 3s    ┆ 1023      ┆ 52   │
+│ 2F56F6     ┆ ike        ┆ 23:22:20   ┆ 23:39:23   ┆   ┆           ┆           ┆           ┆      │
+│ C76CA7896A ┆ classic_bi ┆ 2022-12-01 ┆ 2022-12-01 ┆ … ┆ member    ┆ 13m 52s   ┆ 832       ┆ 48   │
+│ AC29F8     ┆ ke         ┆ 10:00:31   ┆ 10:14:23   ┆   ┆           ┆           ┆           ┆      │
+│ E46DB2CEA2 ┆ electric_b ┆ 2022-12-10 ┆ 2022-12-10 ┆ … ┆ casual    ┆ 27m 49s   ┆ 1669      ┆ 49   │
+│ BF23FC     ┆ ike        ┆ 16:35:52   ┆ 17:03:41   ┆   ┆           ┆           ┆           ┆      │
+│ BC0C1A9503 ┆ classic_bi ┆ 2022-12-01 ┆ 2022-12-01 ┆ … ┆ member    ┆ 19m 20s   ┆ 1160      ┆ 48   │
+│ 934985     ┆ ke         ┆ 08:27:09   ┆ 08:46:29   ┆   ┆           ┆           ┆           ┆      │
+└────────────┴────────────┴────────────┴────────────┴───┴───────────┴───────────┴───────────┴──────┘
+[2025-04-30T23:05:35.280+0000] {xcom.py:664} ERROR - Object of type bytes is not JSON serializable. If you are using pickle instead of JSON for XCom, then you need to enable pickle support for XCom in your airflow config or make sure to decorate your object with attr.
+[2025-04-30T23:05:35.282+0000] {taskinstance.py:2731} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/json.py", line 91, in default
+    return serialize(o)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/serialization/serde.py", line 189, in serialize
+    raise TypeError(f"cannot serialize object of type {cls}")
+TypeError: cannot serialize object of type <class 'bytes'>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 451, in _execute_task
+    task_instance.xcom_push(key=XCOM_RETURN_KEY, value=xcom_value, session=session)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/session.py", line 76, in wrapper
+    return func(*args, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 3013, in xcom_push
+    XCom.set(
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/session.py", line 76, in wrapper
+    return func(*args, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/xcom.py", line 247, in set
+    value = cls.serialize_value(
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/xcom.py", line 662, in serialize_value
+    return json.dumps(value, cls=XComEncoder).encode("UTF-8")
+  File "/usr/local/lib/python3.8/json/__init__.py", line 234, in dumps
+    return cls(
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/json.py", line 104, in encode
+    return super().encode(o)
+  File "/usr/local/lib/python3.8/json/encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/usr/local/lib/python3.8/json/encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/json.py", line 93, in default
+    return super().default(o)
+  File "/usr/local/lib/python3.8/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type bytes is not JSON serializable
+[2025-04-30T23:05:35.327+0000] {taskinstance.py:1149} INFO - Marking task as FAILED. dag_id=bikeshare_etl_pipeline, task_id=transform_data, execution_date=20250430T230413, start_date=20250430T230533, end_date=20250430T230535
+[2025-04-30T23:05:35.379+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 130 for task transform_data (Object of type bytes is not JSON serializable; 14498)
+[2025-04-30T23:05:35.436+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2025-04-30T23:05:35.512+0000] {taskinstance.py:3312} INFO - 0 downstream tasks scheduled from follow-on schedule check

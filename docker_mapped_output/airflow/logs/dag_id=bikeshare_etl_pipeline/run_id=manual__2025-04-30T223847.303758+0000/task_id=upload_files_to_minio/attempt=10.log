@@ -1,0 +1,31 @@
+[2025-04-30T22:57:04.034+0000] {taskinstance.py:1979} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: bikeshare_etl_pipeline.upload_files_to_minio manual__2025-04-30T22:38:47.303758+00:00 [queued]>
+[2025-04-30T22:57:04.050+0000] {taskinstance.py:1979} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: bikeshare_etl_pipeline.upload_files_to_minio manual__2025-04-30T22:38:47.303758+00:00 [queued]>
+[2025-04-30T22:57:04.051+0000] {taskinstance.py:2193} INFO - Starting attempt 10 of 10
+[2025-04-30T22:57:04.079+0000] {taskinstance.py:2217} INFO - Executing <Task(_PythonDecoratedOperator): upload_files_to_minio> on 2025-04-30 22:38:47.303758+00:00
+[2025-04-30T22:57:04.086+0000] {standard_task_runner.py:60} INFO - Started process 13866 to run task
+[2025-04-30T22:57:04.090+0000] {standard_task_runner.py:87} INFO - Running: ['airflow', 'tasks', 'run', 'bikeshare_etl_pipeline', 'upload_files_to_minio', 'manual__2025-04-30T22:38:47.303758+00:00', '--job-id', '116', '--raw', '--subdir', 'DAGS_FOLDER/etl_pipeline.py', '--cfg-path', '/tmp/tmpk_ejyfbk']
+[2025-04-30T22:57:04.092+0000] {standard_task_runner.py:88} INFO - Job 116: Subtask upload_files_to_minio
+[2025-04-30T22:57:04.229+0000] {task_command.py:423} INFO - Running <TaskInstance: bikeshare_etl_pipeline.upload_files_to_minio manual__2025-04-30T22:38:47.303758+00:00 [running]> on host e4f2445a264f
+[2025-04-30T22:57:04.486+0000] {taskinstance.py:2513} INFO - Exporting env vars: AIRFLOW_CTX_DAG_EMAIL='adedoyinsamuel25@gmail.com' AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='bikeshare_etl_pipeline' AIRFLOW_CTX_TASK_ID='upload_files_to_minio' AIRFLOW_CTX_EXECUTION_DATE='2025-04-30T22:38:47.303758+00:00' AIRFLOW_CTX_TRY_NUMBER='10' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-04-30T22:38:47.303758+00:00'
+[2025-04-30T22:57:04.489+0000] {logging_mixin.py:188} INFO - None
+[2025-04-30T22:57:04.490+0000] {taskinstance.py:2731} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 444, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 414, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/decorators/base.py", line 241, in execute
+    return_value = super().execute(context)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 200, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 217, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/etl_pipeline.py", line 106, in upload_files_to_minio
+    local_path = os.path.join(folder_path, csv_file)
+  File "/usr/local/lib/python3.8/posixpath.py", line 76, in join
+    a = os.fspath(a)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+[2025-04-30T22:57:04.532+0000] {taskinstance.py:1149} INFO - Marking task as FAILED. dag_id=bikeshare_etl_pipeline, task_id=upload_files_to_minio, execution_date=20250430T223847, start_date=20250430T225704, end_date=20250430T225704
+[2025-04-30T22:57:04.567+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 116 for task upload_files_to_minio (expected str, bytes or os.PathLike object, not NoneType; 13866)
+[2025-04-30T22:57:04.583+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2025-04-30T22:57:04.646+0000] {taskinstance.py:3312} INFO - 0 downstream tasks scheduled from follow-on schedule check

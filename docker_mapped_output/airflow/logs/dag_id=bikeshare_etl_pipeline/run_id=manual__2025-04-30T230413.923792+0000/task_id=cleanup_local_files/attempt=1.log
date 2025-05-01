@@ -1,0 +1,14 @@
+[2025-05-01T00:34:35.183+0000] {taskinstance.py:1979} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: bikeshare_etl_pipeline.cleanup_local_files manual__2025-04-30T23:04:13.923792+00:00 [queued]>
+[2025-05-01T00:34:35.192+0000] {taskinstance.py:1979} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: bikeshare_etl_pipeline.cleanup_local_files manual__2025-04-30T23:04:13.923792+00:00 [queued]>
+[2025-05-01T00:34:35.192+0000] {taskinstance.py:2193} INFO - Starting attempt 1 of 2
+[2025-05-01T00:34:35.206+0000] {taskinstance.py:2217} INFO - Executing <Task(_PythonDecoratedOperator): cleanup_local_files> on 2025-04-30 23:04:13.923792+00:00
+[2025-05-01T00:34:35.211+0000] {standard_task_runner.py:60} INFO - Started process 20735 to run task
+[2025-05-01T00:34:35.219+0000] {standard_task_runner.py:87} INFO - Running: ['airflow', 'tasks', 'run', 'bikeshare_etl_pipeline', 'cleanup_local_files', 'manual__2025-04-30T23:04:13.923792+00:00', '--job-id', '183', '--raw', '--subdir', 'DAGS_FOLDER/etl_pipeline.py', '--cfg-path', '/tmp/tmpvo1lgp84']
+[2025-05-01T00:34:35.221+0000] {standard_task_runner.py:88} INFO - Job 183: Subtask cleanup_local_files
+[2025-05-01T00:34:35.321+0000] {task_command.py:423} INFO - Running <TaskInstance: bikeshare_etl_pipeline.cleanup_local_files manual__2025-04-30T23:04:13.923792+00:00 [running]> on host e4f2445a264f
+[2025-05-01T00:34:35.496+0000] {taskinstance.py:2513} INFO - Exporting env vars: AIRFLOW_CTX_DAG_EMAIL='adedoyinsamuel25@gmail.com' AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='bikeshare_etl_pipeline' AIRFLOW_CTX_TASK_ID='cleanup_local_files' AIRFLOW_CTX_EXECUTION_DATE='2025-04-30T23:04:13.923792+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-04-30T23:04:13.923792+00:00'
+[2025-05-01T00:34:35.524+0000] {logging_mixin.py:188} INFO - Successfully cleaned up /opt/airflow/dags/data/01-05-2025_capitalbikeshare-tripdata
+[2025-05-01T00:34:35.524+0000] {python.py:202} INFO - Done. Returned value was: None
+[2025-05-01T00:34:35.549+0000] {taskinstance.py:1149} INFO - Marking task as SUCCESS. dag_id=bikeshare_etl_pipeline, task_id=cleanup_local_files, execution_date=20250430T230413, start_date=20250501T003435, end_date=20250501T003435
+[2025-05-01T00:34:35.590+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-05-01T00:34:35.625+0000] {taskinstance.py:3312} INFO - 0 downstream tasks scheduled from follow-on schedule check
