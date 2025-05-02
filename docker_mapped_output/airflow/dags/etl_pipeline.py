@@ -215,20 +215,21 @@ def bikeshare_etl_pipeline():
 
     @task
     def load_log_to_bucket(folder_path):
-        s3_hook = S3Hook(aws_conn_id=AWS_CONN_ID)
-        log_files = [f for f in os.listdir(folder_path) if f.lower().endswith('.log')]
-
-        for file in log_files:
-            local_path = os.path.join(folder_path, file)
-            s3_key = file
+        """upload the flagged log files to bucket"""
+        try:
+            s3_hook = S3Hook(aws_conn_id=AWS_CONN_ID)
+            s3_key = folder_path.split("/")[-1]
             s3_hook.load_file(
-                filename=local_path,
+                filename=folder_path,
                 key=s3_key,
                 bucket_name=MINIO_LOG,
                 replace=True
-            )
+                )
 
-        return local_path
+            return s3_key
+        
+        except Exception as e:
+            print(f"An Error Occured: {e}")
 
     @task()
     def load_cleaned_data_to_postgres(output_file: str) -> bool:
@@ -273,7 +274,7 @@ def bikeshare_etl_pipeline():
     upload_log_to_bucket = load_log_to_bucket(log_path)
     load_data_to_bucket = load_cleaned_data_to_minio(transformed_data)
     postgres_loaded = load_cleaned_data_to_postgres(transformed_data)
-    cleanup = cleanup_local_files(extracted_folder)
+    cleanup = cleanup_local_files(LOCAL_STORAGE)
 
     # Set dependencies
     zip_key >> extracted_folder
