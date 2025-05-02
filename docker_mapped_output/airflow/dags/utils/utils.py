@@ -1,5 +1,5 @@
 import pandas as pd
-from logger import logger
+from utils.logger import logger
 
 def stream_flag_data(file_path):
         """

@@ -1,0 +1,15 @@
+[2025-05-02T00:09:16.137+0000] {taskinstance.py:1979} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: bikeshare_etl_pipeline.transform_data manual__2025-05-02T00:04:26.059841+00:00 [queued]>
+[2025-05-02T00:09:16.149+0000] {taskinstance.py:1979} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: bikeshare_etl_pipeline.transform_data manual__2025-05-02T00:04:26.059841+00:00 [queued]>
+[2025-05-02T00:09:16.149+0000] {taskinstance.py:2193} INFO - Starting attempt 2 of 3
+[2025-05-02T00:09:16.166+0000] {taskinstance.py:2217} INFO - Executing <Task(_PythonDecoratedOperator): transform_data> on 2025-05-02 00:04:26.059841+00:00
+[2025-05-02T00:09:16.172+0000] {standard_task_runner.py:60} INFO - Started process 2118 to run task
+[2025-05-02T00:09:16.175+0000] {standard_task_runner.py:87} INFO - Running: ['airflow', 'tasks', 'run', 'bikeshare_etl_pipeline', 'transform_data', 'manual__2025-05-02T00:04:26.059841+00:00', '--job-id', '241', '--raw', '--subdir', 'DAGS_FOLDER/etl_pipeline.py', '--cfg-path', '/tmp/tmpf886q5rl']
+[2025-05-02T00:09:16.178+0000] {standard_task_runner.py:88} INFO - Job 241: Subtask transform_data
+[2025-05-02T00:09:16.305+0000] {task_command.py:423} INFO - Running <TaskInstance: bikeshare_etl_pipeline.transform_data manual__2025-05-02T00:04:26.059841+00:00 [running]> on host 80c5452bd0a4
+[2025-05-02T00:09:16.584+0000] {taskinstance.py:2513} INFO - Exporting env vars: AIRFLOW_CTX_DAG_EMAIL='adedoyinsamuel25@gmail.com' AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='bikeshare_etl_pipeline' AIRFLOW_CTX_TASK_ID='transform_data' AIRFLOW_CTX_EXECUTION_DATE='2025-05-02T00:04:26.059841+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-05-02T00:04:26.059841+00:00'
+[2025-05-02T00:09:18.613+0000] {base.py:83} INFO - Using connection ID 'minio_s3_conn' for task execution.
+[2025-05-02T00:09:18.614+0000] {connection_wrapper.py:387} INFO - AWS Connection (conn_id='minio_s3_conn', conn_type='aws') credentials retrieved from extra.
+[2025-05-02T00:09:19.708+0000] {python.py:202} INFO - Done. Returned value was: /opt/airflow/data/02-05-2025_capitalbikeshare-tripdata.parquet
+[2025-05-02T00:09:19.816+0000] {taskinstance.py:1149} INFO - Marking task as SUCCESS. dag_id=bikeshare_etl_pipeline, task_id=transform_data, execution_date=20250502T000426, start_date=20250502T000916, end_date=20250502T000919
+[2025-05-02T00:09:19.883+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-05-02T00:09:19.961+0000] {taskinstance.py:3312} INFO - 3 downstream tasks scheduled from follow-on schedule check

@@ -113,3 +113,4 @@ docker-compose up --build -d
 ## Troubleshooting Resources
 https://www.youtube.com/watch?v=tRlEctAwkk8 https://stackoverflow.com/questions/77355287/adding-local-minio-host-to-mc-configuration-failed-to-add-temporary-minio-ser https://stackoverflow.com/questions/60193781/postgres-with-docker-compose-gives-fatal-role-root-does-not-exist-error https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html https://stackoverflow.com/questions/72222070/postgres-and-docker-compose-password-authentication-fails-and-role-postgres-d Setup_Airflow python depencies : https://www.youtube.com/watch?v=0UepvC9X4HY&t=300s, command=docker build . -t dev_apache_airflow:2.8.4 https://www.youtube.com/watch?v=WglsTKda6Gc
 s3 - coonection https://www.youtube.com/watch?v=sVNvAtIZWdQ
+https://stackoverflow.com/questions/65272764/ports-are-not-available-listen-tcp-0-0-0-0-50070-bind-an-attempt-was-made-to

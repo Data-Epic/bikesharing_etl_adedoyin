@@ -6,6 +6,7 @@ from zipfile import ZipFile
 import shutil
 from dotenv import load_dotenv
 from utils.utils import stream_flag_data
+from utils.logger import log_path
 
 import polars as pl
 import pandas as pd
@@ -33,6 +34,7 @@ CURRENT_DATE = datetime.now().strftime("%d-%m-%Y")
 MINIO_BUCKET_RAW = 'bikeshare-raw-data'
 MINIO_BUCKET_CLEANED = 'bikeshare-transformed-data'
 MINIO_PARTITIONED_DATA = "bikeshare-partitioned-data"
+MINIO_LOG = "bikeshare-flagged-log"
 AWS_CONN_ID = 'minio_s3_conn'
 DATABASE_URL=os.getenv("DATABASE_URL")
 
@@ -205,9 +207,28 @@ def bikeshare_etl_pipeline():
 
 
     @task
-    def stream_log_data(data):
-        for data in stream_flag_data(data):
+    def stream_log_data(output_file):
+        for data in stream_flag_data(output_file):
             data
+        return True
+
+
+    @task
+    def load_log_to_bucket(folder_path):
+        s3_hook = S3Hook(aws_conn_id=AWS_CONN_ID)
+        log_files = [f for f in os.listdir(folder_path) if f.lower().endswith('.log')]
+
+        for file in log_files:
+            local_path = os.path.join(folder_path, file)
+            s3_key = file
+            s3_hook.load_file(
+                filename=local_path,
+                key=s3_key,
+                bucket_name=MINIO_LOG,
+                replace=True
+            )
+
+        return local_path
 
     @task()
     def load_cleaned_data_to_postgres(output_file: str) -> bool:
@@ -249,6 +270,7 @@ def bikeshare_etl_pipeline():
     csv_path = upload_files_to_minio(extracted_folder)
     transformed_data = transform_data(csv_path)
     logged_data = stream_log_data(transformed_data)
+    upload_log_to_bucket = load_log_to_bucket(log_path)
     load_data_to_bucket = load_cleaned_data_to_minio(transformed_data)
     postgres_loaded = load_cleaned_data_to_postgres(transformed_data)
     cleanup = cleanup_local_files(extracted_folder)
@@ -257,10 +279,13 @@ def bikeshare_etl_pipeline():
     zip_key >> extracted_folder
     extracted_folder >> csv_path
     csv_path >> transformed_data
-    transformed_data >> logged_data
+    transformed_data >> logged_data >> upload_log_to_bucket
     transformed_data >> load_data_to_bucket
     transformed_data >> postgres_loaded
-    postgres_loaded >> cleanup
+
+    # Ensure cleanup runs after all other tasks
+    [upload_log_to_bucket, load_data_to_bucket, postgres_loaded] >> cleanup
+
 
 # Instantiate the DAG
 bikeshare_etl_dag = bikeshare_etl_pipeline()
